@@ -33,7 +33,7 @@ namespace Microsoft.AspNet.Mvc
                 return;
             }
 
-            ContentType = options.Options.FormatterMappings.GetMediaTypeMappingForFormat(Format);
+            ContentType = options.Value.FormatterMappings.GetMediaTypeMappingForFormat(Format);
         }
 
         /// <summary>

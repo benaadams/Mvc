@@ -88,7 +88,7 @@ namespace Microsoft.AspNet.Mvc
                     context,
                     ViewData,
                     TempData,
-                    options.Options.HtmlHelperOptions,
+                    options.Value.HtmlHelperOptions,
                     ContentType);
             }
         }

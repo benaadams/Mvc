@@ -942,7 +942,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
         {
             var options = new MvcOptions();
             var optionsAccessor = new Mock<IOptions<MvcOptions>>();
-            optionsAccessor.SetupGet(o => o.Options).Returns(options);
+            optionsAccessor.SetupGet(o => o.Value).Returns(options);
 
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddInstance(optionsAccessor.Object);

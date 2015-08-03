@@ -68,7 +68,7 @@ namespace Microsoft.AspNet.Mvc
             var response = context.HttpContext.Response;
             var services = context.HttpContext.RequestServices;
 
-            var htmlHelperOptions = services.GetRequiredService<IOptions<MvcViewOptions>>().Options.HtmlHelperOptions;
+            var htmlHelperOptions = services.GetRequiredService<IOptions<MvcViewOptions>>().Value.HtmlHelperOptions;
             var viewComponentHelper = services.GetRequiredService<IViewComponentHelper>();
 
             var viewData = ViewData;

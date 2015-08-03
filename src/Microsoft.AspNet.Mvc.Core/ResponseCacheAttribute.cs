@@ -93,7 +93,7 @@ namespace Microsoft.AspNet.Mvc
             CacheProfile selectedProfile = null;
             if (CacheProfileName != null)
             {
-                optionsAccessor.Options.CacheProfiles.TryGetValue(CacheProfileName, out selectedProfile);
+                optionsAccessor.Value.CacheProfiles.TryGetValue(CacheProfileName, out selectedProfile);
                 if (selectedProfile == null)
                 {
                     throw new InvalidOperationException(Resources.FormatCacheProfileNotFound(CacheProfileName));

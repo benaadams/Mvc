@@ -56,7 +56,7 @@ namespace Microsoft.AspNet.Mvc
                     .HttpContext
                     .RequestServices
                     .GetRequiredService<IOptions<MvcJsonOptions>>()
-                    .Options
+                    .Value
                     .SerializerSettings;
             }
 

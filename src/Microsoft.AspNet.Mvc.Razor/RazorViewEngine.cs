@@ -54,7 +54,7 @@ namespace Microsoft.AspNet.Mvc.Razor
         {
             _pageFactory = pageFactory;
             _viewFactory = viewFactory;
-            _viewLocationExpanders = optionsAccessor.Options.ViewLocationExpanders;
+            _viewLocationExpanders = optionsAccessor.Value.ViewLocationExpanders;
             _viewLocationCache = viewLocationCache;
         }
 

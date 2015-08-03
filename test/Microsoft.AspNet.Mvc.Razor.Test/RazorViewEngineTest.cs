@@ -1047,7 +1047,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Test
             }
             
             var optionsAccessor = new Mock<IOptions<RazorViewEngineOptions>>();
-            optionsAccessor.SetupGet(v => v.Options)
+            optionsAccessor.SetupGet(v => v.Value)
                 .Returns(options);
             return optionsAccessor.Object;
         }
