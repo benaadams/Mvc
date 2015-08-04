@@ -1273,7 +1273,7 @@ namespace Microsoft.AspNet.Mvc.Test
                 .Callback(() => { Assert.Equal(3, sequence++); });
 
             var options = new MockMvcOptionsAccessor();
-            options.Options.Conventions.Add(applicationConvention.Object);
+            options.Value.Conventions.Add(applicationConvention.Object);
 
 
             var applicationModel = new ApplicationModel();
@@ -1295,7 +1295,7 @@ namespace Microsoft.AspNet.Mvc.Test
             actionModel.Parameters.Add(parameterModel);
 
             // Act
-            ApplicationModelConventions.ApplyConventions(applicationModel, options.Options.Conventions);
+            ApplicationModelConventions.ApplyConventions(applicationModel, options.Value.Conventions);
 
             // Assert
             Assert.Equal(4, sequence);
@@ -1454,7 +1454,7 @@ namespace Microsoft.AspNet.Mvc.Test
             {
                 foreach (var filter in filters)
                 {
-                    options.Options.Filters.Add(filter);
+                    options.Value.Filters.Add(filter);
                 }
             }
 
@@ -1490,7 +1490,7 @@ namespace Microsoft.AspNet.Mvc.Test
             IApplicationModelConvention convention)
         {
             var options = new MockMvcOptionsAccessor();
-            options.Options.Conventions.Add(convention);
+            options.Value.Conventions.Add(convention);
 
             var controllerTypeProvider = new FixedSetControllerTypeProvider(new[] { controllerTypeInfo });
             var modelProvider = new DefaultApplicationModelProvider(options);

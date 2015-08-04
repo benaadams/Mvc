@@ -9,14 +9,9 @@ namespace Microsoft.AspNet.Mvc
     {
         public MockMvcOptionsAccessor()
         {
-            Options = new MvcOptions();
+            Value = new MvcOptions();
         }
 
-        public MvcOptions Options { get; private set; }
-
-        public MvcOptions GetNamedOptions(string name)
-        {
-            return Options;
-        }
+        public MvcOptions Value { get; private set; }
     }
 }

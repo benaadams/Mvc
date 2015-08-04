@@ -74,12 +74,12 @@ namespace Microsoft.AspNet.Mvc
                 new Logger<ObjectResult>(NullLoggerFactory.Instance)));
 
             var optionsAccessor = new MockMvcOptionsAccessor();
-            optionsAccessor.Options.OutputFormatters.Add(new JsonOutputFormatter());
+            optionsAccessor.Value.OutputFormatters.Add(new JsonOutputFormatter());
             services.Add(new ServiceDescriptor(typeof(IOptions<MvcOptions>), optionsAccessor));
 
             var bindingContext = new ActionBindingContext
             {
-                OutputFormatters = optionsAccessor.Options.OutputFormatters,
+                OutputFormatters = optionsAccessor.Value.OutputFormatters,
             };
             var bindingContextAccessor = new ActionBindingContextAccessor
             {
