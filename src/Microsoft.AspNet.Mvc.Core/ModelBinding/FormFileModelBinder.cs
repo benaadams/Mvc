@@ -82,8 +82,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                         continue;
                     }
 
-                    var modelName = HeaderUtilities.RemoveQuotes(parsedContentDisposition.Name);
-                    if (modelName.Equals(bindingContext.ModelName, StringComparison.OrdinalIgnoreCase))
+                    // If we're at the top level, then use the FieldName (paramter or property name).
+                    // This handles the fact that there will be nothing in the ValueProviders for this parameter
+                    // and so we'll do the right thing even though we 'fell-back' to the empty prefix.
+                    var modelName = bindingContext.IsTopLevelObject
+                        ? bindingContext.FieldName
+                        : bindingContext.ModelName;
+
+                    var fileName = HeaderUtilities.RemoveQuotes(parsedContentDisposition.Name);
+                    if (fileName.Equals(modelName, StringComparison.OrdinalIgnoreCase))
                     {
                         postedFiles.Add(file);
                     }

@@ -65,6 +65,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var bindingContext = new ModelBindingContext
             {
                 FallbackToEmptyPrefix = true,
+                IsTopLevelObject = true,
                 ModelMetadata = new EmptyModelMetadataProvider().GetMetadataForType(typeof(List<int>)),
                 ModelName = "someName",
                 ModelState = new ModelStateDictionary(),
@@ -493,6 +494,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var bindingContext = new ModelBindingContext
             {
                 FallbackToEmptyPrefix = true,
+                IsTopLevelObject = true,
                 ModelMetadata = metadataProvider.GetMetadataForType(type),
                 ModelName = "parameter",
                 ModelState = new ModelStateDictionary(),

@@ -132,7 +132,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.False(result.IsFatalError);
             Assert.True(result.IsModelSet);
             Assert.Equal(modelName, result.Key);
             Assert.NotNull(result.ValidationNode);
@@ -170,7 +169,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.False(result.IsFatalError);
             Assert.True(result.IsModelSet);
             Assert.Equal("prefix", result.Key);
             Assert.NotNull(result.ValidationNode);
@@ -222,7 +220,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.False(result.IsFatalError);
             Assert.True(result.IsModelSet);
             Assert.Equal("prefix", result.Key);
             Assert.NotNull(result.ValidationNode);
@@ -264,7 +261,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.False(result.IsFatalError);
             Assert.True(result.IsModelSet);
             Assert.Equal("prefix", result.Key);
             Assert.NotNull(result.ValidationNode);
@@ -299,7 +295,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.False(result.IsFatalError);
             Assert.True(result.IsModelSet);
             Assert.Equal(modelName, result.Key);
             Assert.NotNull(result.ValidationNode);
@@ -309,33 +304,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
         }
 
         [Fact]
-        public async Task DictionaryModelBinder_DoesNotCreateCollection_IfIsTopLevelObjectAndIsFirstChanceBinding()
-        {
-            // Arrange
-            var binder = new DictionaryModelBinder<string, string>();
-
-            var context = CreateContext();
-            context.IsTopLevelObject = true;
-            context.IsFirstChanceBinding = true;
-
-            // Explicit prefix and empty model name both ignored.
-            context.BinderModelName = "prefix";
-            context.ModelName = string.Empty;
-
-            var metadataProvider = context.OperationBindingContext.MetadataProvider;
-            context.ModelMetadata = metadataProvider.GetMetadataForType(typeof(Dictionary<string, string>));
-
-            context.ValueProvider = new TestValueProvider(new Dictionary<string, object>());
-
-            // Act
-            var result = await binder.BindModelAsync(context);
-
-            // Assert
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public async Task DictionaryModelBinder_CreatesEmptyCollection_IfIsTopLevelObjectAndNotIsFirstChanceBinding()
+        public async Task DictionaryModelBinder_CreatesEmptyCollection_IfIsTopLevelObject()
         {
             // Arrange
             var binder = new DictionaryModelBinder<string, string>();

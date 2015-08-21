@@ -860,10 +860,11 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             // Assert
             var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
             Assert.Equal(3, json.Count);
+
             // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field1 field is required."), json["Field1"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field2 field is required."), json["Field2"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field3 field is required."), json["Field3"]);
+            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field1 field is required."), json["model.Field1"]);
+            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field2 field is required."), json["model.Field2"]);
+            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field3 field is required."), json["model.Field3"]);
         }
 
         [Fact]
