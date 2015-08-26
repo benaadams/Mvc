@@ -189,9 +189,8 @@ page:<root>root-content</root>"
 #if GENERATE_BASELINES
             ResourceFile.UpdateFile(_resourcesAssembly, outputFile, expectedContent, responseContent);
 #else
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
-                PlatformNormalizer.NormalizeContent(expectedContent),
+                expectedContent,
                 responseContent,
                 ignoreLineEndingDifferences: true);
 #endif
@@ -261,9 +260,8 @@ page:<root>root-content</root>"
 #if GENERATE_BASELINES
             ResourceFile.UpdateFile(_resourcesAssembly, outputFile, expectedContent, responseContent);
 #else
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
-                PlatformNormalizer.NormalizeContent(expectedContent),
+                expectedContent,
                 responseContent,
                 ignoreLineEndingDifferences: true);
 #endif

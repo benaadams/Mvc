@@ -1102,9 +1102,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
 
         private static void AssertRequiredError(string key, ModelError error)
         {
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(PlatformNormalizer.NormalizeContent(
-                string.Format("The {0} field is required.", key)), error.ErrorMessage);
+            Assert.Equal(string.Format("The {0} field is required.", key), error.ErrorMessage);
             Assert.Null(error.Exception);
         }
     }

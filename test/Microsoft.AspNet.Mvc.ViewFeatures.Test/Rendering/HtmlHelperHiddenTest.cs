@@ -440,10 +440,9 @@ namespace Microsoft.AspNet.Mvc.Rendering
         public void HiddenGeneratesUnobtrusiveValidation()
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expected = PlatformNormalizer.NormalizeContent(
+            var expected =
                 @"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[The Property2 field is required.]]"" " +
-                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />");
+                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(GetViewDataWithModelStateAndModelAndViewDataValues());
 
             // Act
@@ -695,10 +694,9 @@ namespace Microsoft.AspNet.Mvc.Rendering
         public void HiddenFor_GeneratesUnobtrusiveValidationAttributes()
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expected = PlatformNormalizer.NormalizeContent(
+            var expected =
                 @"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[The Property2 field is required.]]"" " +
-                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />");
+                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(GetViewDataWithErrors());
 
             // Act

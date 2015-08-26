@@ -301,10 +301,7 @@ namespace Microsoft.AspNet.Mvc.Formatters.Xml
         public async Task ReadAsync_FallsbackToUTF8_WhenCharSet_NotInContentType()
         {
             // Arrange
-            var expectedException = TestPlatformHelper.IsMono ? typeof(InvalidOperationException) :
-                                                                typeof(XmlException);
-            var expectedMessage = TestPlatformHelper.IsMono ?
-                "There is an error in XML document." :
+            var expectedMessage =
                 "The expected encoding 'utf-8' does not match the actual encoding 'utf-16LE'.";
 
             var inpStart = Encoding.Unicode.GetBytes("<?xml version=\"1.0\" encoding=\"UTF-16\"?>" +
@@ -321,7 +318,7 @@ namespace Microsoft.AspNet.Mvc.Formatters.Xml
             var context = GetInputFormatterContext(contentBytes, typeof(TestLevelTwo));
 
             // Act and Assert
-            var ex = await Assert.ThrowsAsync(expectedException, () => formatter.ReadAsync(context));
+            var ex = await Assert.ThrowsAsync<XmlException>(() => formatter.ReadAsync(context));
             Assert.Equal(expectedMessage, ex.Message);
         }
 
@@ -329,10 +326,7 @@ namespace Microsoft.AspNet.Mvc.Formatters.Xml
         public async Task ReadAsync_UsesContentTypeCharSet_ToReadStream()
         {
             // Arrange
-            var expectedException = TestPlatformHelper.IsMono ? typeof(InvalidOperationException) :
-                                                                typeof(XmlException);
-            var expectedMessage = TestPlatformHelper.IsMono ?
-                "There is an error in XML document." :
+            var expectedMessage =
                 "The expected encoding 'utf-16LE' does not match the actual encoding 'utf-8'.";
 
             var inputBytes = Encoding.UTF8.GetBytes("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -346,7 +340,7 @@ namespace Microsoft.AspNet.Mvc.Formatters.Xml
             var context = new InputFormatterContext(httpContext, modelState, typeof(TestLevelOne));
 
             // Act and Assert
-            var ex = await Assert.ThrowsAsync(expectedException, () => formatter.ReadAsync(context));
+            var ex = await Assert.ThrowsAsync<XmlException>(() => formatter.ReadAsync(context));
             Assert.Equal(expectedMessage, ex.Message);
         }
 

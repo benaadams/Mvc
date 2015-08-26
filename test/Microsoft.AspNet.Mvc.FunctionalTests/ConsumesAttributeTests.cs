@@ -57,7 +57,6 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             // Assert
             Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
             Assert.Equal(typeof(AmbiguousActionException).FullName, exception.ExceptionType);
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
                 "Multiple actions matched. The following actions matched route data and had all constraints " +
                 "satisfied:" + PlatformNormalizer.GetNewLinesAsUnderscores(2) + "ActionConstraintsWebSite." +

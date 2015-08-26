@@ -44,10 +44,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             Assert.Equal(4, json.Count);
             Assert.Equal("CompanyName cannot be null or empty.", json["CompanyName"]);
             Assert.Equal("The field Price must be between 20 and 100.", json["Price"]);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(
-                PlatformNormalizer.NormalizeContent("The Category field is required."),
-                json["Category"]);
+            Assert.Equal("The Category field is required.", json["Category"]);
             AssertErrorEquals(
                 "The field Contact Us must be a string with a maximum length of 20." +
                 "The field Contact Us must match the regular expression " + 
@@ -114,10 +111,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
             Assert.Equal("CompanyName cannot be null or empty.", json["[0].CompanyName"]);
             Assert.Equal("The field Price must be between 20 and 100.", json["[0].Price"]);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(
-                PlatformNormalizer.NormalizeContent("The Category field is required."),
-                json["[0].Category"]);
+            Assert.Equal("The Category field is required.", json["[0].Category"]);
             AssertErrorEquals(
                 "The field Contact Us must be a string with a maximum length of 20." +
                 "The field Contact Us must match the regular expression " + 
@@ -125,9 +119,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
                 json["[0].Contact"]);
             Assert.Equal("CompanyName cannot be null or empty.", json["[1].CompanyName"]);
             Assert.Equal("The field Price must be between 20 and 100.", json["[1].Price"]);
-            Assert.Equal(
-                PlatformNormalizer.NormalizeContent("The Category field is required."),
-                json["[1].Category"]);
+            Assert.Equal("The Category field is required.", json["[1].Category"]);
             AssertErrorEquals(
                 "The field Contact Us must be a string with a maximum length of 20." +
                 "The field Contact Us must match the regular expression " + 

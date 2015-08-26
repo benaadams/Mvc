@@ -591,13 +591,12 @@ Environment.NewLine;
         public void Editor_FindsCorrectDateOrTimeTemplate(string dataTypeName, string editFormatString, string expected)
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expectedInput = PlatformNormalizer.NormalizeContent(
+            var expectedInput =
                 "<input class=\"HtmlEncode[[text-box single-line]]\" data-val=\"HtmlEncode[[true]]\" " +
                 "data-val-required=\"HtmlEncode[[The DateTimeOffset field is required.]]\" id=\"HtmlEncode[[FieldPrefix]]\" " +
                 "name=\"HtmlEncode[[FieldPrefix]]\" type=\"HtmlEncode[[" +
                 dataTypeName + 
-                "]]\" value=\"HtmlEncode[[" + expected + "]]\" />");
+                "]]\" value=\"HtmlEncode[[" + expected + "]]\" />";
 
             var offset = TimeSpan.FromHours(0);
             var model = new DateTimeOffset(
@@ -644,13 +643,12 @@ Environment.NewLine;
         public void Editor_AppliesRfc3339(string dataTypeName, string editFormatString, string expected)
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expectedInput = PlatformNormalizer.NormalizeContent(
+            var expectedInput =
                 "<input class=\"HtmlEncode[[text-box single-line]]\" data-val=\"HtmlEncode[[true]]\" " +
                 "data-val-required=\"HtmlEncode[[The DateTimeOffset field is required.]]\" id=\"HtmlEncode[[FieldPrefix]]\" " +
                 "name=\"HtmlEncode[[FieldPrefix]]\" type=\"HtmlEncode[[" +
                 dataTypeName + 
-                "]]\" value=\"HtmlEncode[[" + expected + "]]\" />");
+                "]]\" value=\"HtmlEncode[[" + expected + "]]\" />";
 
             // Place DateTime-local value in current timezone.
             var offset = string.Equals("", dataTypeName) ? DateTimeOffset.Now.Offset : TimeSpan.FromHours(0);
@@ -702,13 +700,12 @@ Environment.NewLine;
         public void Editor_AppliesNonDefaultEditFormat(string dataTypeName, Html5DateRenderingMode renderingMode)
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expectedInput = PlatformNormalizer.NormalizeContent(
+            var expectedInput =
                 "<input class=\"HtmlEncode[[text-box single-line]]\" data-val=\"HtmlEncode[[true]]\" " +
                 "data-val-required=\"HtmlEncode[[The DateTimeOffset field is required.]]\" id=\"HtmlEncode[[FieldPrefix]]\" " +
                 "name=\"HtmlEncode[[FieldPrefix]]\" type=\"HtmlEncode[[" +
                 dataTypeName + 
-                "]]\" value=\"HtmlEncode[[Formatted as 2000-01-02T03:04:05.0600000+00:00]]\" />");
+                "]]\" value=\"HtmlEncode[[Formatted as 2000-01-02T03:04:05.0600000+00:00]]\" />";
 
             var offset = TimeSpan.FromHours(0);
             var model = new DateTimeOffset(

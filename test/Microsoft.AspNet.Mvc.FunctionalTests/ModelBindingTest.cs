@@ -835,15 +835,14 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
 
             // 8 is the value of MaxModelValidationErrors for the application being tested.
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(8, json.Count);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field1 field is required."), json["Field1"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field2 field is required."), json["Field2"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field3 field is required."), json["Field3"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field4 field is required."), json["Field4"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field5 field is required."), json["Field5"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field6 field is required."), json["Field6"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field7 field is required."), json["Field7"]);
+            Assert.Equal("The Field1 field is required.", json["Field1"]);
+            Assert.Equal("The Field2 field is required.", json["Field2"]);
+            Assert.Equal("The Field3 field is required.", json["Field3"]);
+            Assert.Equal("The Field4 field is required.", json["Field4"]);
+            Assert.Equal("The Field5 field is required.", json["Field5"]);
+            Assert.Equal("The Field6 field is required.", json["Field6"]);
+            Assert.Equal("The Field7 field is required.", json["Field7"]);
             Assert.Equal("The maximum number of allowed model errors has been reached.", json[""]);
         }
 
@@ -860,10 +859,9 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             // Assert
             var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
             Assert.Equal(3, json.Count);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field1 field is required."), json["Field1"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field2 field is required."), json["Field2"]);
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Field3 field is required."), json["Field3"]);
+            Assert.Equal("The Field1 field is required.", json["Field1"]);
+            Assert.Equal("The Field2 field is required.", json["Field2"]);
+            Assert.Equal("The Field3 field is required.", json["Field3"]);
         }
 
         [Fact]
@@ -1309,8 +1307,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
                 }, modelStateErrors["Year"].OrderBy(item => item, StringComparer.Ordinal));
 
             var vinError = Assert.Single(modelStateErrors["Vin"]);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Vin field is required."), vinError);
+            Assert.Equal("The Vin field is required.", vinError);
         }
 
         [Fact]
@@ -1456,17 +1453,6 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 #if GENERATE_BASELINES
             ResourceFile.UpdateFile(_assembly, outputFile, expectedContent, responseContent);
 #else
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            expectedContent = PlatformNormalizer.NormalizeContent(expectedContent);
-            if (TestPlatformHelper.IsMono)
-            {
-                expectedContent = expectedContent.Replace(
-                    "<span class=\"field-validation-error\" data-valmsg-for=\"Vehicle.Year\"" +
-                    " data-valmsg-replace=\"true\">The field Year must be between 1980 and 2034.</span>",
-                    "<span class=\"field-validation-error\" data-valmsg-for=\"Vehicle.Year\"" +
-                    " data-valmsg-replace=\"true\">Year is invalid</span>");
-            }
-
             Assert.Equal(expectedContent, responseContent, ignoreLineEndingDifferences: true);
 #endif
         }
@@ -1503,9 +1489,8 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 #if GENERATE_BASELINES
             ResourceFile.UpdateFile(_assembly, outputFile, expectedContent, responseContent);
 #else
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
-                PlatformNormalizer.NormalizeContent(expectedContent),
+                expectedContent,
                 responseContent,
                 ignoreLineEndingDifferences: true);
 #endif
@@ -1718,9 +1703,8 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 #if GENERATE_BASELINES
             ResourceFile.UpdateFile(_assembly, outputFile, expectedContent, responseContent);
 #else
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
-                PlatformNormalizer.NormalizeContent(expectedContent),
+                expectedContent,
                 responseContent,
                 ignoreLineEndingDifferences: true);
 #endif
@@ -1765,9 +1749,8 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 #if GENERATE_BASELINES
             ResourceFile.UpdateFile(_assembly, outputFile, expectedContent, responseContent);
 #else
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
-                PlatformNormalizer.NormalizeContent(expectedContent),
+                expectedContent,
                 responseContent,
                 ignoreLineEndingDifferences: true);
 #endif

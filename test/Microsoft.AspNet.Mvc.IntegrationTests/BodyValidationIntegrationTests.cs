@@ -61,8 +61,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             Assert.Equal("CustomParameter.Address", key);
             Assert.False(modelState.IsValid);
             var error = Assert.Single(modelState[key].Errors);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Address field is required."), error.ErrorMessage);
+            Assert.Equal("The Address field is required.", error.ErrorMessage);
         }
 
         [Fact]
@@ -213,8 +212,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             var street = Assert.Single(modelState, kvp => kvp.Key == "CustomParameter.Address.Street").Value;
             Assert.Equal(ModelValidationState.Invalid, street.ValidationState);
             var error = Assert.Single(street.Errors);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(PlatformNormalizer.NormalizeContent("The Street field is required."), error.ErrorMessage);
+            Assert.Equal("The Street field is required.", error.ErrorMessage);
         }
 
         private class Person3

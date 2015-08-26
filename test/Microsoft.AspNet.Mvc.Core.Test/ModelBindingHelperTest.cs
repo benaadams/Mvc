@@ -65,8 +65,7 @@ namespace Microsoft.AspNet.Mvc.Test
         public async Task TryUpdateModel_ReturnsFalse_IfModelValidationFails()
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expectedMessage = PlatformNormalizer.NormalizeContent("The MyProperty field is required.");
+            var expectedMessage = "The MyProperty field is required.";
             var binders = new IModelBinder[]
             {
                 new SimpleTypeModelBinder(),

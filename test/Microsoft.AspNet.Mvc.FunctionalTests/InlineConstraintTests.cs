@@ -49,7 +49,6 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
             // Assert
             var exception = response.GetServerException();
-            // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
                 "The view 'Index' was not found." +
                 " The following locations were searched:" + PlatformNormalizer.GetNewLinesAsUnderscores(1) +
