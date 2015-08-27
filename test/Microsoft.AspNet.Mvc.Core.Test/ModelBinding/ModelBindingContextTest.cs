@@ -10,14 +10,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
     public class ModelBindingContextTest
     {
         [Fact]
-        public void GetChildModelBindingContext()
+        public void CreateChildBindingContext()
         {
             // Arrange
             var originalBindingContext = new ModelBindingContext
             {
                 ModelMetadata = new TestModelMetadataProvider().GetMetadataForType(typeof(object)),
                 ModelName = "theName",
-                ModelState = new ModelStateDictionary(),
+                OperationBindingContext = new OperationBindingContext(),
                 ValueProvider = new SimpleValueProvider()
             };
 
@@ -32,19 +32,21 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var newModelMetadata = metadataProvider.GetMetadataForType(typeof(object));
             
             // Act
-            var newBindingContext = ModelBindingContext.GetChildModelBindingContext(
+            var newBindingContext = ModelBindingContext.CreateChildBindingContext(
                 originalBindingContext,
-                string.Empty,
-                newModelMetadata);
+                newModelMetadata,
+                fieldName: "parameter",
+                modelName: "parameter",
+                model: null);
 
             // Assert
             Assert.Same(newModelMetadata, newBindingContext.ModelMetadata);
             Assert.Same(newModelMetadata.BindingSource, newBindingContext.BindingSource);
             Assert.Same(newModelMetadata.BinderModelName, newBindingContext.BinderModelName);
             Assert.Same(newModelMetadata.BinderType, newBindingContext.BinderType);
-            Assert.Equal("", newBindingContext.ModelName);
-            Assert.Equal(originalBindingContext.ModelState, newBindingContext.ModelState);
-            Assert.Equal(originalBindingContext.ValueProvider, newBindingContext.ValueProvider);
+            Assert.Equal("parameter", newBindingContext.ModelName);
+            Assert.Same(originalBindingContext.OperationBindingContext, newBindingContext.OperationBindingContext);
+            Assert.Same(originalBindingContext.ValueProvider, newBindingContext.ValueProvider);
         }
 
         [Fact]
