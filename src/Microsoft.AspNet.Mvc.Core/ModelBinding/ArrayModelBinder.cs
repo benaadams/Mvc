@@ -21,7 +21,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         {
             if (bindingContext.ModelMetadata.IsReadOnly)
             {
-                return Task.FromResult<ModelBindingResult>(null);
+                return ModelBindingResult.NoResultTask;
             }
 
             return base.BindModelAsync(bindingContext);
