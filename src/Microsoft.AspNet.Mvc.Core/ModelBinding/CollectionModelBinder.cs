@@ -153,7 +153,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             var innerBindingContext = ModelBindingContext.CreateChildBindingContext(
                 bindingContext,
                 elementMetadata,
-                fieldName: string.Empty,
+                fieldName: bindingContext.FieldName,
                 modelName: bindingContext.ModelName,
                 model: null);
 
@@ -229,7 +229,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 var childBindingContext = ModelBindingContext.CreateChildBindingContext(
                     bindingContext,
                     elementMetadata,
-                    fieldName: string.Empty,
+                    fieldName: indexName,
                     modelName: fullChildName,
                     model: null);
 

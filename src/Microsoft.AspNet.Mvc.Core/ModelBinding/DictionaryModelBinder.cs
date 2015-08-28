@@ -60,7 +60,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             var valueBindingContext = ModelBindingContext.CreateChildBindingContext(
                 bindingContext,
                 valueMetadata,
-                fieldName: string.Empty,
+                fieldName: bindingContext.FieldName,
                 modelName: bindingContext.ModelName,
                 model: null);
 

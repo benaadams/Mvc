@@ -10,11 +10,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
     public class ModelBindingContextTest
     {
         [Fact]
-        public void CreateChildBindingContext()
+        public void CreateChildBindingContext_CopiesProperties()
         {
             // Arrange
             var originalBindingContext = new ModelBindingContext
             {
+                Model = new object(),
                 ModelMetadata = new TestModelMetadataProvider().GetMetadataForType(typeof(object)),
                 ModelName = "theName",
                 OperationBindingContext = new OperationBindingContext(),
@@ -35,16 +36,22 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var newBindingContext = ModelBindingContext.CreateChildBindingContext(
                 originalBindingContext,
                 newModelMetadata,
-                fieldName: "parameter",
-                modelName: "parameter",
+                fieldName: "fieldName",
+                modelName: "modelprefix.fieldName",
                 model: null);
 
             // Assert
-            Assert.Same(newModelMetadata, newBindingContext.ModelMetadata);
-            Assert.Same(newModelMetadata.BindingSource, newBindingContext.BindingSource);
             Assert.Same(newModelMetadata.BinderModelName, newBindingContext.BinderModelName);
             Assert.Same(newModelMetadata.BinderType, newBindingContext.BinderType);
-            Assert.Equal("parameter", newBindingContext.ModelName);
+            Assert.Same(newModelMetadata.BindingSource, newBindingContext.BindingSource);
+            Assert.False(newBindingContext.FallbackToEmptyPrefix);
+            Assert.Equal("fieldName", newBindingContext.FieldName);
+            Assert.False(newBindingContext.IsFirstChanceBinding);
+            Assert.False(newBindingContext.IsTopLevelObject);
+            Assert.Null(newBindingContext.Model);
+            Assert.Same(newModelMetadata, newBindingContext.ModelMetadata);
+            Assert.Equal("modelprefix.fieldName", newBindingContext.ModelName);
+            Assert.Same(originalBindingContext.ModelState, newBindingContext.ModelState);
             Assert.Same(originalBindingContext.OperationBindingContext, newBindingContext.OperationBindingContext);
             Assert.Same(originalBindingContext.ValueProvider, newBindingContext.ValueProvider);
         }

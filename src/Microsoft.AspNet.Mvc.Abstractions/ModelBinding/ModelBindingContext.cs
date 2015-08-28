@@ -74,14 +74,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         {
             return new ModelBindingContext()
             {
-                IsFirstChanceBinding = parent.IsFirstChanceBinding,
                 ModelState = parent.ModelState,
                 OperationBindingContext = parent.OperationBindingContext,
                 ValueProvider = parent.ValueProvider,
-
-                // These are never true for a child context.
-                FallbackToEmptyPrefix = false,
-                IsTopLevelObject = false,
 
                 Model = model,
                 ModelMetadata = modelMetadata,
@@ -97,12 +92,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         /// <summary>
         /// Represents the <see cref="OperationBindingContext"/> associated with this context.
         /// </summary>
-        public OperationBindingContext OperationBindingContext { get; set; }
+        public OperationBindingContext OperationBindingContext { get; [param:NotNull] set; }
 
         /// <summary>
         /// Gets or sets the name of the current field being bound.
         /// </summary>
-        public string FieldName { get; set; }
+        public string FieldName { get; [param: NotNull] set; }
 
         /// <summary>
         /// Gets or sets the model value for the current operation.
@@ -116,19 +111,19 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         /// <summary>
         /// Gets or sets the metadata for the model associated with this context.
         /// </summary>
-        public ModelMetadata ModelMetadata { get; set; }
+        public ModelMetadata ModelMetadata { get; [param: NotNull] set; }
 
         /// <summary>
         /// Gets or sets the name of the model. This property is used as a key for looking up values in
         /// <see cref="IValueProvider"/> during model binding.
         /// </summary>
-        public string ModelName { get; set; }
+        public string ModelName { get; [param: NotNull] set; }
 
         /// <summary>
         /// Gets or sets the <see cref="ModelStateDictionary"/> used to capture <see cref="ModelState"/> values
         /// for properties in the object graph of the model when binding.
         /// </summary>
-        public ModelStateDictionary ModelState { get; set; }
+        public ModelStateDictionary ModelState { get; [param: NotNull] set; }
 
         /// <summary>
         /// Gets the type of the model.
@@ -188,12 +183,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         /// <summary>
         /// Gets or sets the <see cref="IValueProvider"/> associated with this context.
         /// </summary>
-        public IValueProvider ValueProvider { get; set; }
+        public IValueProvider ValueProvider { get; [param: NotNull] set; }
 
         /// <summary>
         /// Gets or sets a predicate which will be evaluated for each property to determine if the property
         /// is eligible for model binding.
         /// </summary>
-        public Func<ModelBindingContext, string, bool> PropertyFilter = _defaultPropertyFilter;
+        public Func<ModelBindingContext, string, bool> PropertyFilter { get; set; }
     }
 }
