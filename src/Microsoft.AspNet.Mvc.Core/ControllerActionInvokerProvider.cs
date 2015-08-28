@@ -45,7 +45,7 @@ namespace Microsoft.AspNet.Mvc.Core
             _modelValidatorProviders = optionsAccessor.Value.ModelValidatorProviders.ToArray();
             _valueProviderFactories = optionsAccessor.Value.ValueProviderFactories.ToArray();
             _actionBindingContextAccessor = actionBindingContextAccessor;
-            _maxModelValidationErrors = optionsAccessor.Options.MaxModelValidationErrors;
+            _maxModelValidationErrors = optionsAccessor.Value.MaxModelValidationErrors;
             _logger = loggerFactory.CreateLogger<ControllerActionInvoker>();
             _notifier = notifier;
         }
