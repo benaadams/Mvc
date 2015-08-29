@@ -14,14 +14,16 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
 
             // Act
             var result = new ModelBindingResult(
+                "someName",
                 "some string",
                 isModelSet: true,
-                key: "someName");
+                validationNode: null);
 
             // Assert
             Assert.Equal("some string", result.Model);
             Assert.True(result.IsModelSet);
             Assert.Equal("someName", result.Key);
+            Assert.Null(result.ValidationNode);
         }
     }
 }

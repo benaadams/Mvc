@@ -21,7 +21,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         {
             if (bindingContext.ModelType != typeof(IFormCollection))
             {
-                return null;
+                return ModelBindingResult.NoResult;
             }
 
             object model;
@@ -42,11 +42,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                      SuppressValidation = true,
                  };
 
-            return new ModelBindingResult(
-                model,
-                bindingContext.ModelName,
-                isModelSet: true,
-                validationNode: validationNode);
+            return ModelBindingResult.Success(bindingContext.ModelName, model, validationNode);
         }
 
         private class EmptyFormCollection : IFormCollection

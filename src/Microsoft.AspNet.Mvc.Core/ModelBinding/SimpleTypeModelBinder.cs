@@ -19,14 +19,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             if (bindingContext.ModelMetadata.IsComplexType)
             {
                 // this type cannot be converted
-                return null;
+                return ModelBindingResult.NoResult;
             }
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
             if (valueProviderResult == ValueProviderResult.None)
             {
                 // no entry
-                return null;
+                return ModelBindingResult.NoResult;
             }
 
             bindingContext.ModelState.SetModelValue(bindingContext.ModelName, valueProviderResult);
@@ -65,8 +65,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                     null;
 
                 return new ModelBindingResult(
-                    model,
                     bindingContext.ModelName,
+                    model,
                     isModelSet,
                     validationNode);
             }
@@ -76,11 +76,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             }
 
             // Were able to find a converter for the type but conversion failed.
-            // Tell the model binding system to skip other model binders i.e. return non-null.
-            return new ModelBindingResult(
-                model: null,
-                key: bindingContext.ModelName,
-                isModelSet: false);
+            // Tell the model binding system to skip other model binders.
+            return ModelBindingResult.Failed(bindingContext.ModelName);
         }
     }
 }

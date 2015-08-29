@@ -50,7 +50,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 // This model binder is the only handler for the Body binding source and it cannot run twice. Always
                 // tell the model binding system to skip other model binders and never to fall back i.e. indicate a
                 // fatal error.
-                return new ModelBindingResult(modelBindingKey);
+                return ModelBindingResult.Failed(modelBindingKey);
             }
 
             try
@@ -64,7 +64,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 {
                     // Formatter added an error. Do not use the model it returned. As above, tell the model binding
                     // system to skip other model binders and never to fall back.
-                    return new ModelBindingResult(modelBindingKey);
+                    return ModelBindingResult.Failed(modelBindingKey);
                 }
 
                 var validationNode = new ModelValidationNode(modelBindingKey, bindingContext.ModelMetadata, model)
@@ -72,11 +72,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                     ValidateAllProperties = true
                 };
 
-                return new ModelBindingResult(
-                    model,
-                    key: modelBindingKey,
-                    isModelSet: true,
-                    validationNode: validationNode);
+                return ModelBindingResult.Success(modelBindingKey, model, validationNode);
             }
             catch (Exception ex)
             {
@@ -85,7 +81,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 // This model binder is the only handler for the Body binding source and it cannot run twice. Always
                 // tell the model binding system to skip other model binders and never to fall back i.e. indicate a
                 // fatal error.
-                return new ModelBindingResult(modelBindingKey);
+                return ModelBindingResult.Failed(modelBindingKey);
             }
         }
     }

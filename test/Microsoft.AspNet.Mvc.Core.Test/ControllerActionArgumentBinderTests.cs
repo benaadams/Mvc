@@ -26,7 +26,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                 {
                     Name = "foo",
                     ParameterType = typeof(object),
-                        BindingInfo = new BindingInfo(),
+                    BindingInfo = new BindingInfo(),
                 });
 
             var actionContext = GetActionContext(actionDescriptor);
@@ -34,7 +34,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var binder = new Mock<IModelBinder>();
             binder
                 .Setup(b => b.BindModelAsync(It.IsAny<ModelBindingContext>()))
-                .Returns(Task.FromResult<ModelBindingResult>(result: null));
+                .Returns(ModelBindingResult.NoResultAsync);
             var actionBindingContext = new ActionBindingContext()
             {
                 ModelBinder = binder.Object,
@@ -61,13 +61,13 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                 {
                     Name = "foo",
                     ParameterType = typeof(object),
-                        BindingInfo = new BindingInfo(),
+                    BindingInfo = new BindingInfo(),
                 });
 
             var binder = new Mock<IModelBinder>();
             binder
                 .Setup(b => b.BindModelAsync(It.IsAny<ModelBindingContext>()))
-                .Returns(Task.FromResult(new ModelBindingResult(null, "", false)));
+                .Returns(ModelBindingResult.FailedAsync(string.Empty));
 
             var actionContext = new ActionContext(
                 new DefaultHttpContext(),
@@ -101,7 +101,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                 {
                     Name = "foo",
                     ParameterType = typeof(string),
-                        BindingInfo = new BindingInfo(),
+                    BindingInfo = new BindingInfo(),
                 });
 
             var value = "Hello world";
@@ -114,7 +114,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                 {
                     context.ModelMetadata = metadataProvider.GetMetadataForType(typeof(string));
                 })
-                .Returns(Task.FromResult(result: new ModelBindingResult(value, key: string.Empty, isModelSet: true)));
+                .Returns(ModelBindingResult.SuccessAsync(string.Empty, value));
 
             var actionContext = new ActionContext(
                 new DefaultHttpContext(),
@@ -178,7 +178,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                 {
                     Name = "foo",
                     ParameterType = typeof(object),
-                        BindingInfo = new BindingInfo(),
+                    BindingInfo = new BindingInfo(),
                 });
 
             var actionContext = new ActionContext(
@@ -189,7 +189,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var binder = new Mock<IModelBinder>();
             binder
                 .Setup(b => b.BindModelAsync(It.IsAny<ModelBindingContext>()))
-                .Returns(Task.FromResult<ModelBindingResult>(null));
+                .Returns(ModelBindingResult.NoResultAsync);
 
             var actionBindingContext = new ActionBindingContext()
             {
@@ -263,7 +263,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var binder = new Mock<IModelBinder>();
             binder
                 .Setup(b => b.BindModelAsync(It.IsAny<ModelBindingContext>()))
-                .Returns(Task.FromResult<ModelBindingResult>(null));
+                .Returns(ModelBindingResult.NoResultAsync);
 
             var actionBindingContext = new ActionBindingContext()
             {
@@ -362,8 +362,12 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var binder = new Mock<IModelBinder>();
             binder
                 .Setup(b => b.BindModelAsync(It.IsAny<ModelBindingContext>()))
-                .Returns(Task.FromResult(
-                    result: new ModelBindingResult(model: null, key: string.Empty, isModelSet: isModelSet)));
+                .Returns(Task.FromResult(new ModelBindingResult(
+                    key: string.Empty,
+                    model: null,
+                    isModelSet: isModelSet,
+                    validationNode: null)));
+
             var actionBindingContext = new ActionBindingContext()
             {
                 ModelBinder = binder.Object,
@@ -400,8 +404,8 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var binder = new Mock<IModelBinder>();
             binder
                 .Setup(b => b.BindModelAsync(It.IsAny<ModelBindingContext>()))
-                .Returns(Task.FromResult(
-                    result: new ModelBindingResult(model: null, key: string.Empty, isModelSet: true)));
+                .Returns(ModelBindingResult.SuccessAsync(key: string.Empty, model: null));
+
             var actionBindingContext = new ActionBindingContext()
             {
                 ModelBinder = binder.Object,
@@ -543,7 +547,11 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                 {
                     object model;
                     var isModelSet = inputPropertyValues.TryGetValue(bindingContext.ModelName, out model);
-                    return Task.FromResult(new ModelBindingResult(model, bindingContext.ModelName, isModelSet));
+                    return Task.FromResult(new ModelBindingResult(
+                        bindingContext.ModelName,
+                        model,
+                        isModelSet,
+                        validationNode: null));
                 });
             var actionBindingContext = new ActionBindingContext
             {
@@ -564,10 +572,10 @@ namespace Microsoft.AspNet.Mvc.Core.Test
 
         private static ActionContext GetActionContext(ActionDescriptor descriptor = null)
         {
-           return new ActionContext(
-                new DefaultHttpContext(),
-                new RouteData(),
-                descriptor ?? GetActionDescriptor());
+            return new ActionContext(
+                 new DefaultHttpContext(),
+                 new RouteData(),
+                 descriptor ?? GetActionDescriptor());
         }
 
         private static ActionDescriptor GetActionDescriptor()
@@ -594,8 +602,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                   .Returns<ModelBindingContext>(mbc =>
                   {
                       var validationNode = new ModelValidationNode(string.Empty, mbc.ModelMetadata, model);
-                      return Task.FromResult(
-                      result: new ModelBindingResult(model, string.Empty, isModelSet: true, validationNode: validationNode));
+                      return ModelBindingResult.SuccessAsync(string.Empty, model, validationNode: validationNode);
                   });
 
             return new ActionBindingContext()

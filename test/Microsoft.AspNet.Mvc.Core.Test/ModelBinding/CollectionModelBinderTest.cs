@@ -318,7 +318,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var result = await binder.BindModelAsync(context);
 
             // Assert
-            Assert.Null(result);
+            Assert.Equal(ModelBindingResult.NoResult, result);
         }
 
         // Model type -> can create instance.
@@ -368,7 +368,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
                 {
                     Assert.Equal("someName", mbc.ModelName);
                     childValidationNode = new ModelValidationNode("someName", mbc.ModelMetadata, mbc.Model);
-                    return Task.FromResult(new ModelBindingResult(42, mbc.ModelName, true, childValidationNode));
+                    return ModelBindingResult.SuccessAsync(mbc.ModelName, 42, childValidationNode);
                 });
             var modelBinder = new CollectionModelBinder<int>();
 
@@ -418,13 +418,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
                         var model = value.ConvertTo(mbc.ModelType);
                         var modelValidationNode = new ModelValidationNode(mbc.ModelName, mbc.ModelMetadata, model);
                         return Task.FromResult(new ModelBindingResult(
+                            mbc.ModelName,
                             model, 
-                            mbc.ModelName, 
                             model != null, 
                             modelValidationNode));
                     }
 
-                    return Task.FromResult<ModelBindingResult>(null);
+                    return ModelBindingResult.NoResultAsync;
                 });
             return mockIntBinder.Object;
         }

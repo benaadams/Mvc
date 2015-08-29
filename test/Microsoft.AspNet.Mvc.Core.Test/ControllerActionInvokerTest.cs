@@ -2075,7 +2075,7 @@ namespace Microsoft.AspNet.Mvc
 
             var binder = new Mock<IModelBinder>();
             binder.Setup(b => b.BindModelAsync(It.IsAny<ModelBindingContext>()))
-                  .Returns(Task.FromResult<ModelBindingResult>(result: null));
+                  .Returns(ModelBindingResult.NoResultAsync);
             var context = new Mock<HttpContext>();
             context.SetupGet(c => c.Items)
                    .Returns(new Dictionary<object, object>());

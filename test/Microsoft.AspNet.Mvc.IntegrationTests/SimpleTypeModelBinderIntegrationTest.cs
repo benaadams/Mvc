@@ -359,7 +359,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             // Assert
 
             // ModelBindingResult
-            Assert.Null(modelBindingResult);
+            Assert.Equal(ModelBindingResult.NoResult, modelBindingResult);
 
             // ModelState
             Assert.True(modelState.IsValid);

@@ -14,11 +14,26 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
     {
         public static readonly ModelBindingResult NoResult = new ModelBindingResult();
 
-        public static readonly Task<ModelBindingResult> NoResultTask = Task.FromResult(NoResult);
+        public static readonly Task<ModelBindingResult> NoResultAsync = Task.FromResult(NoResult);
 
         public static ModelBindingResult Failed(string key)
         {
             return new ModelBindingResult(key, model: null, isModelSet: false, validationNode: null);
+        }
+
+        public static Task<ModelBindingResult> FailedAsync(string key)
+        {
+            return Task.FromResult(Failed(key));
+        }
+
+        public static ModelBindingResult Success(string key, object model)
+        {
+            return Success(key, model, validationNode: null);
+        }
+
+        public static Task<ModelBindingResult> SuccessAsync(string key, object model)
+        {
+            return Task.FromResult(Success(key, model, validationNode: null));
         }
 
         public static ModelBindingResult Success(string key, object model, ModelValidationNode validationNode)
@@ -26,7 +41,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             return new ModelBindingResult(key, model, isModelSet: true, validationNode: validationNode);
         }
 
-        private ModelBindingResult(string key, object model, bool isModelSet, ModelValidationNode validationNode)
+        public static Task<ModelBindingResult> SuccessAsync(string key, object model, ModelValidationNode validationNode)
+        {
+            return Task.FromResult(Success(key, model, validationNode));
+        }
+
+        public ModelBindingResult(string key, object model, bool isModelSet, ModelValidationNode validationNode)
         {
             Key = key;
             Model = model;

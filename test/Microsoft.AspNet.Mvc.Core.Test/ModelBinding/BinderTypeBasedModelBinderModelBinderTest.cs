@@ -26,7 +26,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var binderResult = await binder.BindModelAsync(bindingContext);
 
             // Assert
-            Assert.Null(binderResult);
+            Assert.Equal(ModelBindingResult.NoResult, binderResult);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var binderResult = await binder.BindModelAsync(bindingContext);
 
             // Assert
-            Assert.NotNull(binderResult);
+            Assert.Equal(ModelBindingResult.NoResult, binderResult);
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
         {
             public Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
             {
-                return Task.FromResult<ModelBindingResult>(null);
+                return ModelBindingResult.NoResultAsync;
             }
         }
 
@@ -142,7 +142,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             {
                 var validationNode =
                     new ModelValidationNode(bindingContext.ModelName, bindingContext.ModelMetadata, _model);
-                return Task.FromResult(new ModelBindingResult(_model, bindingContext.ModelName, true, validationNode));
+                return ModelBindingResult.SuccessAsync(bindingContext.ModelName, _model, validationNode);
             }
         }
     }

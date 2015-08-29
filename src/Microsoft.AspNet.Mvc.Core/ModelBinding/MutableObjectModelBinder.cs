@@ -26,7 +26,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             ModelBindingHelper.ValidateBindingContext(bindingContext);
             if (!CanBindType(bindingContext.ModelMetadata))
             {
-                return null;
+                return ModelBindingResult.NoResult;
             }
 
             var mutableObjectBinderContext = new MutableObjectBinderContext()
@@ -37,7 +37,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             if (!(CanCreateModel(mutableObjectBinderContext)))
             {
-                return null;
+                return ModelBindingResult.NoResult;
             }
 
             // Create model first (if necessary) to avoid reporting errors about properties when activation fails.
@@ -54,11 +54,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             bindingContext.Model = model;
             ProcessResults(bindingContext, results, validationNode);
 
-            return new ModelBindingResult(
-                model,
-                bindingContext.ModelName,
-                isModelSet: true,
-                validationNode: validationNode);
+            return ModelBindingResult.Success(bindingContext.ModelName, model, validationNode);
         }
 
         /// <summary>
@@ -304,7 +300,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 if (result == null)
                 {
                     // Could not bind. Let ProcessResult() know explicitly.
-                    result = new ModelBindingResult(model: null, key: propertyContext.ModelName, isModelSet: false);
+                    result = ModelBindingResult.Failed(propertyContext.ModelName);
                 }
 
                 results[propertyMetadata] = result;
@@ -425,7 +421,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             foreach (var entry in results)
             {
                 var result = entry.Value;
-                if (result != null)
+                if (result != ModelBindingResult.NoResult)
                 {
                     var propertyMetadata = entry.Key;
                     SetProperty(bindingContext, modelExplorer, propertyMetadata, result);

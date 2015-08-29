@@ -159,10 +159,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
 
             protected override Task<ModelBindingResult> BindModelCoreAsync(ModelBindingContext bindingContext)
             {
-                return Task.FromResult(new ModelBindingResult(
-                    new Address(),
-                    bindingContext.ModelName,
-                    isModelSet: true));
+                return ModelBindingResult.SuccessAsync(bindingContext.ModelName, new Address());
             }
         }
 

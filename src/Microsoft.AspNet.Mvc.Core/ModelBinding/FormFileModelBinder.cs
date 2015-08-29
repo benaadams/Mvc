@@ -36,7 +36,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             else
             {
                 // This binder does not support the requested type.
-                return null;
+                return ModelBindingResult.NoResult;
             }
 
             ModelValidationNode validationNode = null;
@@ -55,8 +55,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             }
 
             return new ModelBindingResult(
-                value,
                 bindingContext.ModelName,
+                value,
                 isModelSet: value != null,
                 validationNode: validationNode);
         }

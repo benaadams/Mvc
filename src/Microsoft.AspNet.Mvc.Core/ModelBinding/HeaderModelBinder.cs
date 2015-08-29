@@ -69,8 +69,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             return Task.FromResult(
                 new ModelBindingResult(
-                    model,
                     bindingContext.ModelName,
+                    model,
                     isModelSet: model != null,
                     validationNode: validationNode));
         }

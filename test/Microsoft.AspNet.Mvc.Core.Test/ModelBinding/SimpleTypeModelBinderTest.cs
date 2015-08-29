@@ -27,10 +27,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var binder = new SimpleTypeModelBinder();
 
             // Act
-            var retVal = await binder.BindModelAsync(bindingContext);
+            var result = await binder.BindModelAsync(bindingContext);
 
             // Assert
-            Assert.Null(retVal);
+            Assert.Equal(ModelBindingResult.NoResult, result);
         }
 
         [Theory]
@@ -42,7 +42,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
         [InlineData(typeof(DateTimeOffset))]
         [InlineData(typeof(double))]
         [InlineData(typeof(DayOfWeek))]
-        public async Task BindModel_ReturnsNotNull_IfTypeCanBeConverted(Type destinationType)
+        public async Task BindModel_ReturnsSuccess_IfTypeCanBeConverted(Type destinationType)
         {
             if (TestPlatformHelper.IsMono &&
                 destinationType == typeof(DateTimeOffset))
@@ -61,10 +61,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var binder = new SimpleTypeModelBinder();
 
             // Act
-            var retVal = await binder.BindModelAsync(bindingContext);
+            var result = await binder.BindModelAsync(bindingContext);
 
             // Assert
-            Assert.NotNull(retVal);
+            Assert.True(result.IsModelSet);
         }
 
         [Theory]
@@ -130,10 +130,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var binder = new SimpleTypeModelBinder();
 
             // Act
-            var retVal = await binder.BindModelAsync(bindingContext);
+            var result = await binder.BindModelAsync(bindingContext);
 
             // Assert
-            Assert.Null(retVal);
+            Assert.Equal(ModelBindingResult.NoResult, result);
             Assert.Empty(bindingContext.ModelState);
         }
 
@@ -150,11 +150,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var binder = new SimpleTypeModelBinder();
 
             // Act
-            var retVal = await binder.BindModelAsync(bindingContext);
+            var result = await binder.BindModelAsync(bindingContext);
 
             // Assert
-            Assert.NotNull(retVal);
-            Assert.Null(retVal.Model);
+            Assert.Null(result.Model);
             Assert.True(bindingContext.ModelState.ContainsKey("theModelName"));
         }
 
@@ -171,11 +170,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
             var binder = new SimpleTypeModelBinder();
 
             // Act
-            var retVal = await binder.BindModelAsync(bindingContext);
+            var result = await binder.BindModelAsync(bindingContext);
 
             // Assert
-            Assert.NotNull(retVal);
-            Assert.Equal(42, retVal.Model);
+            Assert.NotNull(result);
+            Assert.Equal(42, result.Model);
             Assert.True(bindingContext.ModelState.ContainsKey("theModelName"));
         }
 

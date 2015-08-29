@@ -48,7 +48,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task BindParameter_WithModelBinderType_NoData_ReturnsNull()
+        public async Task BindParameter_WithModelBinderType_NoData()
         {
             // Arrange
             var argumentBinder = ModelBindingTestHelper.GetArgumentBinder();
@@ -71,9 +71,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             var modelBindingResult = await argumentBinder.BindModelAsync(parameter, modelState, operationContext);
 
             // Assert
-
-            // ModelBindingResult
-            Assert.Null(modelBindingResult);
+            Assert.False(modelBindingResult.IsModelSet);
 
             // ModelState (not set unless inner binder sets it)
             Assert.True(modelState.IsValid);
@@ -85,7 +83,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task BindParameter_WithModelBinderType_NonGreedy_NoData_ReturnsNull()
+        public async Task BindParameter_WithModelBinderType_NonGreedy_NoData()
         {
             // Arrange
             var argumentBinder = ModelBindingTestHelper.GetArgumentBinder();
@@ -110,7 +108,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             // Assert
 
             // ModelBindingResult
-            Assert.Null(modelBindingResult);
+            Assert.False(modelBindingResult.IsModelSet);
 
             // ModelState
             Assert.True(modelState.IsValid);
@@ -119,9 +117,9 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
 
         // ModelBinderAttribute can be used without specifying the binder type.
         // In such cases BinderTypeBasedModelBinder acts like a non greedy binder where
-        // it returns a null ModelBindingResult allowing other ModelBinders to run.
+        // it returns an empty ModelBindingResult allowing other ModelBinders to run.
         [Fact]
-        public async Task BindParameter_WithOutModelBinderType_NoData()
+        public async Task BindParameter_WithOutModelBinderType()
         {
             // Arrange
             var argumentBinder = ModelBindingTestHelper.GetArgumentBinder();
@@ -146,7 +144,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             // Assert
 
             // ModelBindingResult
-            Assert.Null(modelBindingResult);
+            Assert.False(modelBindingResult.IsModelSet);
 
             // ModelState
             Assert.True(modelState.IsValid);
@@ -306,7 +304,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
                     ValidateAllProperties = true
                 };
 
-                return Task.FromResult(new ModelBindingResult(address, bindingContext.ModelName, true, validationNode));
+                return ModelBindingResult.SuccessAsync(bindingContext.ModelName, address, validationNode);
             }
         }
 
@@ -324,7 +322,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
                     bindingContext.ModelName,
                     bindingContext.ModelMetadata,
                     model);
-                return Task.FromResult(new ModelBindingResult(model, bindingContext.ModelName, true, modelValidationNode));
+                return ModelBindingResult.SuccessAsync(bindingContext.ModelName, model, modelValidationNode);
             }
         }
 
@@ -332,7 +330,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         {
             public Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
             {
-                return Task.FromResult(new ModelBindingResult(null, bindingContext.ModelName, true));
+                return ModelBindingResult.SuccessAsync(bindingContext.ModelName, model: null);
             }
         }
 
@@ -340,7 +338,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         {
             public Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
             {
-                return Task.FromResult(new ModelBindingResult(null, bindingContext.ModelName, false));
+                return ModelBindingResult.FailedAsync(bindingContext.ModelName);
             }
         }
 
@@ -348,7 +346,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         {
             public Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
             {
-                return Task.FromResult<ModelBindingResult>(null);
+                return ModelBindingResult.NoResultAsync;
             }
         }
     }
