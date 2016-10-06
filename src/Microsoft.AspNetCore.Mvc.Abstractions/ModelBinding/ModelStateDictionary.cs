@@ -21,7 +21,9 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
         /// The default value for <see cref="MaxAllowedErrors"/> of <c>200</c>.
         /// </summary>
         public static readonly int DefaultMaxAllowedErrors = 200;
-        private static readonly char[] Delimiters = new char[] { '.', '[' };
+
+        private const char DelimiterDot = '.';
+        private const char DelimiterOpen = '[';
 
         private readonly ModelStateNode _root;
         private int _maxAllowedErrors;
@@ -521,14 +523,41 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             //    -> baz
             //     -> [qux]
 
+            DelimiterMatch lastMatchType = DelimiterMatch.NoMatch;
+
             var current = _root;
             var previousIndex = 0;
-            int index;
-            while ((index = key.IndexOfAny(Delimiters, previousIndex)) != -1)
+            int index = 0;
+
+            foreach (var ch in key)
             {
-                var keyStart = previousIndex == 0 || key[previousIndex - 1] == '.'
-                    ? previousIndex
-                    : previousIndex - 1;
+                DelimiterMatch matchType;
+                switch (ch)
+                {
+                    case DelimiterDot:
+                        matchType = DelimiterMatch.Dot;
+                        break;
+                    case DelimiterOpen:
+                        matchType = DelimiterMatch.OpenBracket;
+                        break;
+                    default:
+                        index++;
+                        continue;
+                }
+
+                int keyStart;
+                switch (lastMatchType)
+                {
+                    case DelimiterMatch.NoMatch:
+                    case DelimiterMatch.Dot:
+                        keyStart = previousIndex;
+                        break;
+                    case DelimiterMatch.OpenBracket:
+                    default:
+                        keyStart = previousIndex - 1;
+                        break;
+                }
+
                 var subKey = new StringSegment(key, keyStart, index - keyStart);
                 current = current.GetNode(subKey, createIfNotExists);
                 if (current == null)
@@ -537,14 +566,27 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
                     return null;
                 }
 
+                lastMatchType = matchType;
                 previousIndex = index + 1;
+
+                index++;
             }
 
             if (previousIndex < key.Length)
             {
-                var keyStart = previousIndex == 0 || key[previousIndex - 1] == '.'
-                    ? previousIndex
-                    : previousIndex - 1;
+                int keyStart;
+                switch (lastMatchType)
+                {
+                    case DelimiterMatch.NoMatch:
+                    case DelimiterMatch.Dot:
+                        keyStart = previousIndex;
+                        break;
+                    case DelimiterMatch.OpenBracket:
+                    default:
+                        keyStart = previousIndex - 1;
+                        break;
+                }
+
                 var subKey = new StringSegment(key, keyStart, key.Length - keyStart);
                 current = current.GetNode(subKey, createIfNotExists);
             }
@@ -559,6 +601,14 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
 
             return current;
         }
+
+        private enum DelimiterMatch
+        {
+            NoMatch,
+            Dot,
+            OpenBracket
+        }
+
 
         private static ModelValidationState? GetValidity(ModelStateNode node)
         {
