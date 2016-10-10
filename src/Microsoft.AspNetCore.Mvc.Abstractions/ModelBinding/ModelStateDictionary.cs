@@ -523,42 +523,27 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             //    -> baz
             //     -> [qux]
 
-            DelimiterMatch lastMatchType = DelimiterMatch.NoMatch;
-
             var current = _root;
-            var previousIndex = 0;
-            int index = 0;
+            var lastMatch = default(MatchResult);
 
-            foreach (var ch in key)
+            do
             {
-                DelimiterMatch matchType;
-                switch (ch)
-                {
-                    case DelimiterDot:
-                        matchType = DelimiterMatch.Dot;
-                        break;
-                    case DelimiterOpen:
-                        matchType = DelimiterMatch.OpenBracket;
-                        break;
-                    default:
-                        index++;
-                        continue;
-                }
+                var match = FindNext(key, lastMatch.Index);
 
                 int keyStart;
-                switch (lastMatchType)
+                switch (lastMatch.Type)
                 {
-                    case DelimiterMatch.NoMatch:
-                    case DelimiterMatch.Dot:
-                        keyStart = previousIndex;
+                    case Delimiter.None:
+                    case Delimiter.Dot:
+                        keyStart = lastMatch.Index;
                         break;
-                    case DelimiterMatch.OpenBracket:
+                    case Delimiter.OpenBracket:
                     default:
-                        keyStart = previousIndex - 1;
+                        keyStart = lastMatch.Index - 1;
                         break;
                 }
 
-                var subKey = new StringSegment(key, keyStart, index - keyStart);
+                var subKey = new StringSegment(key, keyStart, match.Index - keyStart);
                 current = current.GetNode(subKey, createIfNotExists);
                 if (current == null)
                 {
@@ -566,32 +551,11 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
                     return null;
                 }
 
-                lastMatchType = matchType;
-                previousIndex = index + 1;
+                lastMatch.Type = match.Type;
+                lastMatch.Index = match.Index + 1;
+            } while (lastMatch.Type != Delimiter.None);
 
-                index++;
-            }
-
-            if (previousIndex < key.Length)
-            {
-                int keyStart;
-                switch (lastMatchType)
-                {
-                    case DelimiterMatch.NoMatch:
-                    case DelimiterMatch.Dot:
-                        keyStart = previousIndex;
-                        break;
-                    case DelimiterMatch.OpenBracket:
-                    default:
-                        keyStart = previousIndex - 1;
-                        break;
-                }
-
-                var subKey = new StringSegment(key, keyStart, key.Length - keyStart);
-                current = current.GetNode(subKey, createIfNotExists);
-            }
-
-            if (current != null && current.Key == null)
+            if (current.Key == null)
             {
                 // Don't update the key if it's been previously assigned. This is to prevent change in key casing
                 // e.g. modelState.SetModelValue("foo", .., ..);
@@ -600,6 +564,28 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             }
 
             return current;
+        }
+
+        private static MatchResult FindNext(string key, int index)
+        {
+            var match = default(MatchResult);
+            for (; index < key.Length; index++)
+            {
+                var ch = key[index];
+                if (ch == DelimiterDot)
+                {
+                    match.Type = Delimiter.Dot;
+                    break;
+                }
+                else if (ch == DelimiterOpen)
+                {
+                    match.Type = Delimiter.OpenBracket;
+                    break;
+                }
+            }
+
+            match.Index = index;
+            return match;
         }
 
         private static ModelValidationState? GetValidity(ModelStateNode node)
@@ -799,13 +785,19 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             return new PrefixEnumerable(this, prefix);
         }
 
-        private enum DelimiterMatch
+        private struct MatchResult
         {
-            NoMatch,
+            public Delimiter Type;
+            public int Index;
+        }
+
+        private enum Delimiter
+        {
+            None = 0,
             Dot,
             OpenBracket
         }
-		
+
         [DebuggerDisplay("SubKey={SubKey}, Key={Key}, ValidationState={ValidationState}")]
         private class ModelStateNode : ModelStateEntry
         {
