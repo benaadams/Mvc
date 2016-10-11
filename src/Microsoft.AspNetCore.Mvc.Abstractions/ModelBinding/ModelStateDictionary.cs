@@ -544,7 +544,8 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
                 }
 
                 var subKey = new StringSegment(key, keyStart, match.Index - keyStart);
-                current = current.GetNode(subKey, createIfNotExists);
+                current = createIfNotExists ? current.GetOrAddNode(subKey) : current.GetNode(subKey);
+
                 if (current == null)
                 {
                     // createIfNotExists is set to false and a node wasn't found. Exit early.
@@ -845,44 +846,57 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
                 Errors.Clear();
             }
 
-            public ModelStateNode GetNode(StringSegment subKey, bool createIfNotExists)
+            public ModelStateNode GetNode(StringSegment subKey)
             {
                 ModelStateNode modelStateNode = null;
-                if (subKey.Length != 0)
+                if (subKey.Length == 0 || ChildNodes == null)
                 {
-                    if (ChildNodes == null)
-                    {
-                        if (createIfNotExists)
-                        {
-                            ChildNodes = new List<ModelStateNode>(1);
-                            modelStateNode = new ModelStateNode(subKey);
-                            ChildNodes.Add(modelStateNode);
-                        }
-                    }
-                    else
-                    {
-                        var index = BinarySearch(subKey);
-                        if (index >= 0)
-                        {
-                            modelStateNode = ChildNodes[index];
-                        }
-                        else if (createIfNotExists)
-                        {
-                            modelStateNode = new ModelStateNode(subKey);
-                            ChildNodes.Insert(~index, modelStateNode);
-                        }
-                    }
+                    modelStateNode = this;
                 }
                 else
                 {
+                    var index = BinarySearch(subKey);
+                    if (index >= 0)
+                    {
+                        modelStateNode = ChildNodes[index];
+                    }
+                }
+
+                return modelStateNode;
+            }
+
+            public ModelStateNode GetOrAddNode(StringSegment subKey)
+            {
+                ModelStateNode modelStateNode;
+                if (subKey.Length == 0)
+                {
                     modelStateNode = this;
+                }
+                else if (ChildNodes == null)
+                {
+                    ChildNodes = new List<ModelStateNode>(1);
+                    modelStateNode = new ModelStateNode(subKey);
+                    ChildNodes.Add(modelStateNode);
+                }
+                else
+                {
+                    var index = BinarySearch(subKey);
+                    if (index >= 0)
+                    {
+                        modelStateNode = ChildNodes[index];
+                    }
+                    else
+                    {
+                        modelStateNode = new ModelStateNode(subKey);
+                        ChildNodes.Insert(~index, modelStateNode);
+                    }
                 }
 
                 return modelStateNode;
             }
 
             public override ModelStateEntry GetModelStateForProperty(string propertyName)
-                => GetNode(new StringSegment(propertyName), createIfNotExists: false);
+                => GetNode(new StringSegment(propertyName));
 
             private int BinarySearch(StringSegment searchKey)
             {
