@@ -504,11 +504,11 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             }
         }
 
-        private ModelStateNode GetNode(string key) => GetNode(key, createIfNotExists: false);
+        private ModelStateNode GetNode(string key) => GetNode<GetOnly>(key);
 
-        private ModelStateNode GetOrAddNode(string key) => GetNode(key, createIfNotExists: true);
+        private ModelStateNode GetOrAddNode(string key) => GetNode<GetOrAdd>(key);
 
-        private ModelStateNode GetNode(string key, bool createIfNotExists)
+        private ModelStateNode GetNode<TMode>(string key) where TMode : struct, IGetNodeMode
         {
             Debug.Assert(key != null);
             if (key.Length == 0)
@@ -532,8 +532,9 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
                                 ? lastMatch.Index - 1 
                                 : lastMatch.Index;
                 var subKey = new StringSegment(key, keyStart, match.Index - keyStart);
-                current = createIfNotExists
-                            ? current.GetOrAddNode(subKey) 
+                // Compile time if for struct type, other branch not taken is elmininated by jit
+                current = (typeof(TMode) == typeof(GetOrAdd))
+                            ? current.GetOrAddNode(subKey)
                             : current.GetNode(subKey);
                 if (current == null)
                 {
@@ -774,6 +775,10 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
 
             return new PrefixEnumerable(this, prefix);
         }
+
+        private interface IGetNodeMode { }
+        private struct GetOnly : IGetNodeMode { }
+        private struct GetOrAdd : IGetNodeMode { }
 
         private struct MatchResult
         {
