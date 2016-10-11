@@ -525,38 +525,27 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
 
             var current = _root;
             var lastMatch = default(MatchResult);
-
             do
             {
                 var match = FindNext(key, lastMatch.Index);
-
-                int keyStart;
-                switch (lastMatch.Type)
-                {
-                    case Delimiter.None:
-                    case Delimiter.Dot:
-                        keyStart = lastMatch.Index;
-                        break;
-                    case Delimiter.OpenBracket:
-                    default:
-                        keyStart = lastMatch.Index - 1;
-                        break;
-                }
-
+                var keyStart = lastMatch.Type == Delimiter.OpenBracket 
+                                ? lastMatch.Index - 1 
+                                : lastMatch.Index;
                 var subKey = new StringSegment(key, keyStart, match.Index - keyStart);
-                current = createIfNotExists ? current.GetOrAddNode(subKey) : current.GetNode(subKey);
-
+                current = createIfNotExists
+                            ? current.GetOrAddNode(subKey) 
+                            : current.GetNode(subKey);
                 if (current == null)
                 {
-                    // createIfNotExists is set to false and a node wasn't found. Exit early.
-                    return null;
+                    // createIfNotExists is false and node wasn't found. Stop searching.
+                    break;
                 }
 
                 lastMatch.Type = match.Type;
                 lastMatch.Index = match.Index + 1;
             } while (lastMatch.Type != Delimiter.None);
 
-            if (current.Key == null)
+            if (current != null && current.Key == null)
             {
                 // Don't update the key if it's been previously assigned. This is to prevent change in key casing
                 // e.g. modelState.SetModelValue("foo", .., ..);
